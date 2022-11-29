@@ -1,42 +1,48 @@
-package org.example;
+package org.example.hbase;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.RegionLocator;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class Regionfinder {
 
     public static void main(String[] args) throws IOException {
         String table_name = "pii_table";
-        String rowkey = "100321161256";
+        String rowkey = "4240";
         TableName tablename = TableName.valueOf(table_name);
         byte[] keyInBytes = Bytes.toBytes(rowkey);
+        System.out.println(Arrays.toString(keyInBytes));
 //        String s = new String(keyInBytes, StandardCharsets.UTF_8);
 //        System.out.println(s);
-//        for (byte k : keyInBytes) {
-//            System.out.println(k);
-//        }
+
         HbaseConnection hbaseConnection = new HbaseConnection();
         Connection connection = hbaseConnection.getConnection();
         Table table = connection.getTable(tablename);
         RegionLocator regionLocater = connection.getRegionLocator(tablename);
         HRegionLocation regionLocation = regionLocater.getRegionLocation(keyInBytes);
-        Result result = table.get(new Get(keyInBytes));
+//        Result result = table.get(new Get(keyInBytes));
 
-        for (Cell cell : result.listCells()) {
-            String qualifier = Bytes.toString(CellUtil.cloneQualifier(cell));
-            String value = Bytes.toString(CellUtil.cloneValue(cell));
-            System.out.printf("Qualifier : %s : Value : %s", qualifier, value);
+        Scan scan = new Scan();
+        scan.setCaching(20);
+        ResultScanner scanner = table.getScanner(scan);
+        for (Result result = scanner.next(); (result != null); result = scanner.next()) {
+            Get get = new Get(result.getRow());
+            Result entireRow = table.get(get);
+            System.out.println(entireRow);
         }
+
+//        if (result.isEmpty()) System.out.println("nothing");
+//        else for (Cell cell : result.listCells()) {
+////            String qualifier = Bytes.toString(CellUtil.cloneQualifier(cell));
+////            String value = Bytes.toString(CellUtil.cloneValue(cell));
+////            System.out.printf("Qualifier : %s : Value : %s", qualifier, value);
+//            System.out.println(cell);
+//        }
 
 //        if(result.isEmpty()){
 //            System.out.println("Rowkey "+rowkey+" is not exist in any region. It will be placed in region : "+regionLocation.getRegion().getRegionNameAsString());

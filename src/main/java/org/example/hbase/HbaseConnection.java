@@ -1,4 +1,4 @@
-package org.example;
+package org.example.hbase;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -16,7 +16,7 @@ public class HbaseConnection {
 
     public HbaseConnection() {
         Configuration conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum","192.168.23.37,192.168.23.39,192.168.23.41");
+        conf.set("hbase.zookeeper.quorum","m1,m2");
         conf.set("hbase.zookeeper.property.clientPort", "2181");
 
         try {
