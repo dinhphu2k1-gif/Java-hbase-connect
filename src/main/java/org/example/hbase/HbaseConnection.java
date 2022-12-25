@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import java.io.IOException;
 
 public class HbaseConnection {
-    private final static String HBASE_ZOOKEEPER_QUORUM = "192.168.23.37,192.168.23.39,192.168.23.41";
+    private final static String HBASE_ZOOKEEPER_QUORUM = "";
 
     private final static String HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT = "2181";
 
@@ -21,6 +21,7 @@ public class HbaseConnection {
 
         try {
             connection = ConnectionFactory.createConnection(conf);
+            System.out.println("init connection!!!!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,5 +37,11 @@ public class HbaseConnection {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        HbaseConnection hbaseConnection = new HbaseConnection();
+        Connection connection = hbaseConnection.getConnection();
+        connection.close();
     }
 }
