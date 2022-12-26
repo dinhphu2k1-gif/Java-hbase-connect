@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import java.io.IOException;
 
 public class HbaseConnection {
-    private final static String HBASE_ZOOKEEPER_QUORUM = "";
+    private final static String HBASE_ZOOKEEPER_QUORUM = "192.168.23.37,192.168.23.39,192.168.23.41";
 
     private final static String HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT = "2181";
 
@@ -16,7 +16,7 @@ public class HbaseConnection {
 
     public HbaseConnection() {
         Configuration conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum","m1,m2");
+        conf.set("hbase.zookeeper.quorum",HBASE_ZOOKEEPER_QUORUM);
         conf.set("hbase.zookeeper.property.clientPort", "2181");
 
         try {
