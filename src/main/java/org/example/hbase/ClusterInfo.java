@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class ClusterInfo {
     private String fileName = "requestMetric.txt";
     private Connection connection;
-    private TableName table = TableName.valueOf("pii_table");
+    private TableName table = TableName.valueOf("pii_table_v2");
     private Admin admin;
 
     public ClusterInfo() {
@@ -111,7 +111,7 @@ public class ClusterInfo {
             byte[] strToBytes = content.getBytes();
             outputStream.write(strToBytes);
 
-            System.out.print("File is created successfully with the content.");
+            System.out.print("File is updated successfully with the content.");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -125,15 +125,11 @@ public class ClusterInfo {
 
         for (ServerName serverName : serverNameList) {
             List<RegionMetrics> regionMetricsList = admin.getRegionMetrics(serverName, table);
-            long totlaReq = 0; // tổng request của server đó
-
             for (RegionMetrics regionMetrics : regionMetricsList) {
-                long numReadReq = regionMetrics.getReadRequestCount();
-                long numWriteRed = regionMetrics.getWriteRequestCount();
+                long numReq = regionMetrics.getRequestCount(); // request cuả region đó
 
-                totlaReq += numReadReq + numWriteRed;
-                if (totlaReq > maxRequest) {
-                    maxRequest = totlaReq;
+                if (numReq > maxRequest) {
+                    maxRequest = numReq;
                     regionMaxRequest = regionMetrics;
                 }
             }
