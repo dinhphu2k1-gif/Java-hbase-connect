@@ -10,18 +10,20 @@ import java.io.IOException;
 public class HbaseConnection {
     private final static String HBASE_ZOOKEEPER_QUORUM = "192.168.23.37,192.168.23.39,192.168.23.41";
 
-    private final static String HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT = "2181";
+    private final static String HBASE_ZOOKEEPER_PORT = "2181";
 
     private Connection connection;
 
     public HbaseConnection() {
         Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.zookeeper.quorum",HBASE_ZOOKEEPER_QUORUM);
-        conf.set("hbase.zookeeper.property.clientPort", "2181");
+        conf.set("hbase.zookeeper.property.clientPort", HBASE_ZOOKEEPER_PORT);
+        conf.set("hbase.client.scanner.caching", "5000");
 
         try {
             connection = ConnectionFactory.createConnection(conf);
             System.out.println("init connection!!!!");
+            System.out.println("hbase.client.scanner.caching default value -> " + connection.getConfiguration().get("hbase.client.scanner.caching"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

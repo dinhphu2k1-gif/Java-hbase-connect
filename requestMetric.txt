@@ -1,6 +1,0 @@
-hadoop2337 0
-hadoop2338 0
-hadoop2339 0
-hadoop2340 0
-hadoop2341 0
-hadoop2355 0
